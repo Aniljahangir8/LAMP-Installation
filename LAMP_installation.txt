@@ -1,13 +1,13 @@
-First of all Update:
+#First of all Update:
 apt-get update
 
-Install Apache:
+#Install Apache:
 apt-get install apache2
 systemctl start apache2
 systemctl enable apache2
 systemctl status apache2
 
-Install PHP Versions:
+#Install PHP Versions:
 sudo add-apt-repository -y ppa:ondrej/php
 sudo apt-get update
 sudo apt-get install php7.2 php7.2-curl php7.2-gd php7.2-json php7.2-mbstring php7.2-intl php7.2-mysql php7.2-xml php7.2-zip php7.2-soap php7.2-common
@@ -21,19 +21,19 @@ sudo apt-get install mysql-server
 mysql_secure_installation
 apt-get install phpmyadmin (For phpmyadmin)
 
-Mysql Login:
+#Mysql Login:
 mysql -u root -p
 
-Create Mysql User:
+#Create Mysql User:
 
-Add Mysql User
+#Add Mysql User
 CREATE USER 'dbuser'@'localhost' IDENTIFIED BY 'dBu$eR@123';
 GRANT ALL PRIVILEGES ON * . * TO 'dbuser'@'localhost (For all database)
                           OR
 GRANT SELECT, INSERT, UPDATE, DELETE, ALTER CREATE ON `database`.* TO 'dbuser'@'localhost'; (For one database)
 FLUSH PRIVILEGES
 
-Virtual Host Apache:
+#Virtual Host Apache:
 
 cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/domain.com.conf
 vim /etc/apache2/sites-available/domain.com.conf
@@ -51,15 +51,15 @@ vim /etc/apache2/sites-available/domain.com.conf
 
 </VirtualHost>
 
-File Close
+#File Close
 
 
-Create Log Files:
+#Create Log Files:
 mkdir /var/www/logs/domain.com
 touch error.log
 touch access.log
 
-Enable Virtual Host Site:
+#Enable Virtual Host Site:
 a2ensite domain.com.conf 
 service apache2 restart
 cd /var/www/domain.com/
@@ -68,11 +68,11 @@ vim index.html
 Add line: <h2> <center>Welcome to domain.com</center> </h2>
 
 
-SftpUser:
+#SftpUser:
 useradd -d /var/www/domain/ sftpuser
 passwd sftpuser
 
-Add following lines in /etc/ssh/sshd_config
+#Add following lines in /etc/ssh/sshd_config
 
 Match User sftpuser
   ForceCommand internal-sftp
@@ -86,9 +86,9 @@ Match User sftpuser
 service ssh restart
 
 
-SSL Apache2:
+#SSL Apache2:
 
-open file 
+#open file 
 vim /etc/apache2/sites-available/domain.com.conf
 
 <VirtualHost *:443>
@@ -116,7 +116,7 @@ DocumentRoot /var/www/domain.com/
 Redirect permanent / https://domain.com/
 </VirtualHost>  
 
-File close
+#File close
 
 a2enmod ssl
 service apache2 restart
