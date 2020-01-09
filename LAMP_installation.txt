@@ -1,0 +1,122 @@
+First of all Update:
+apt-get update
+
+Install Apache:
+apt-get install apache2
+systemctl start apache2
+systemctl enable apache2
+systemctl status apache2
+
+Install PHP Versions:
+sudo add-apt-repository -y ppa:ondrej/php
+sudo apt-get update
+sudo apt-get install php7.2 php7.2-curl php7.2-gd php7.2-json php7.2-mbstring php7.2-intl php7.2-mysql php7.2-xml php7.2-zip php7.2-soap php7.2-common
+sudo apt-get install php7.1 php7.1-curl php7.1-gd php7.1-json php7.1-mbstring php7.1-intl php7.1-mysql php7.1-xml php7.1-zip php7.1-soap php7.1-common
+sudo apt-get install php7.0 php7.0-curl php7.0-gd php7.0-json php7.0-mbstring php7.0-intl php7.0-mysql php7.0-xml php7.0-zip php7.0-soap php7.0-common
+sudo apt-get install php5.6 php5.6-curl php5.6-gd php5.6-json php5.6-mbstring php5.6-intl php5.6-mysql php5.6-xml php5.6-zip php5.6-soap php5.6-common
+sudo apt-get install php7.4-curl php7.4-gd php7.4-json php7.4-mbstring php7.4-intl php7.4-mysql php7.4-xml php7.4-zip php7.4-common
+
+Install Mysql Server:
+sudo apt-get install mysql-server
+mysql_secure_installation
+apt-get install phpmyadmin (For phpmyadmin)
+
+Mysql Login:
+mysql -u root -p
+
+Create Mysql User:
+
+Add Mysql User
+CREATE USER 'dbuser'@'localhost' IDENTIFIED BY 'dBu$eR@123';
+GRANT ALL PRIVILEGES ON * . * TO 'dbuser'@'localhost (For all database)
+                          OR
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER CREATE ON `database`.* TO 'dbuser'@'localhost'; (For one database)
+FLUSH PRIVILEGES
+
+Virtual Host Apache:
+
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/domain.com.conf
+vim /etc/apache2/sites-available/domain.com.conf
+
+<VirtualHost *:80>
+
+  ServerAdmin webmaster@localhost
+  ServerName domain.com
+  ServerAlias www.domain.com
+  DocumentRoot /var/www/domain.com/
+
+  #Logs Location
+  ErrorLog /var/www/logs/domain.com/error.log
+  CustomLog /var/www/logs/domain.com/access.log combined
+
+</VirtualHost>
+
+File Close
+
+
+Create Log Files:
+mkdir /var/www/logs/domain.com
+touch error.log
+touch access.log
+
+Enable Virtual Host Site:
+a2ensite domain.com.conf 
+service apache2 restart
+cd /var/www/domain.com/
+
+vim index.html
+Add line: <h2> <center>Welcome to domain.com</center> </h2>
+
+
+SftpUser:
+useradd -d /var/www/domain/ sftpuser
+passwd sftpuser
+
+Add following lines in /etc/ssh/sshd_config
+
+Match User sftpuser
+  ForceCommand internal-sftp
+  PasswordAuthentication yes
+  ChrootDirectory /var/www/domain.com/
+  PermitTunnel no
+  AllowAgentForwarding no
+  AllowTcpForwarding no
+  X11Forwarding no
+
+service ssh restart
+
+
+SSL Apache2:
+
+open file 
+vim /etc/apache2/sites-available/domain.com.conf
+
+<VirtualHost *:443>
+
+  ServerAdmin webmaster@localhost
+  ServerName domain.com
+  DocumentRoot /var/www/domain.com/
+
+  #SSL Cert
+
+  SSLEngine on
+  SSLCertificateFile /etc/ssl/domain.com/domain.crt
+  SSLCertificateKeyFile /etc/ssl/domain.com/domain.key
+  SSLCertificateChainFile /etc/ssl/domain.com/domain.ca-bundle
+
+  ErrorLog /var/www/logs/domain.com/error.log
+  CustomLog /var/www/logs/domain.com/access.log combined
+
+</VirtualHost>
+
+#Redirect http to https
+<VirtualHost *:80>
+ServerName domain.com
+DocumentRoot /var/www/domain.com/
+Redirect permanent / https://domain.com/
+</VirtualHost>  
+
+File close
+
+a2enmod ssl
+service apache2 restart
