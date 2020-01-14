@@ -43,7 +43,7 @@ mysql -u root -p
 CREATE USER 'dbuser'@'localhost' IDENTIFIED BY 'dBu$eR@123';
 GRANT ALL PRIVILEGES ON * . * TO 'dbuser'@'localhost (For all database)
                           OR
-GRANT SELECT, INSERT, UPDATE, DELETE, ALTER CREATE ON `database`.* TO 'dbuser'@'localhost'; (For one database)
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE ON `database`.* TO 'dbuser'@'localhost'; (For one database)
 FLUSH PRIVILEGES
 
 #Virtual Host Apache:
