@@ -40,11 +40,17 @@ mysql -u root -p
 #Create Mysql User:
 
 #Add Mysql User
-CREATE USER 'dbuser'@'localhost' IDENTIFIED BY 'dBu$eR@123';
+CREATE USER 'dbuser'@'localhost' IDENTIFIED BY 'Password';
 GRANT ALL PRIVILEGES ON * . * TO 'dbuser'@'localhost (For all database)
                           OR
-GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE ON `database`.* TO 'dbuser'@'localhost'; (For one database)
-FLUSH PRIVILEGES
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE ON `database`.* TO 'dbuser'@'localhost'; (For one database per user)
+exit;
+
+#if we want to login phpmyadmin with root
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Password';
+
+UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+FLUSH PRIVILEGES;
 
 #Virtual Host Apache:
 
@@ -56,11 +62,11 @@ vim /etc/apache2/sites-available/domain.com.conf
   ServerAdmin webmaster@localhost
   ServerName domain.com
   ServerAlias www.domain.com
-  DocumentRoot /var/www/domain.com/
+  DocumentRoot /var/www/domain.com/public_html/
 
   #Logs Location
-  ErrorLog /var/www/logs/domain.com/error.log
-  CustomLog /var/www/logs/domain.com/access.log combined
+  ErrorLog /var/www/domain.com/logs/error.log
+  CustomLog /var/www/logs/domain.com/logs/access.log combined
 
 </VirtualHost>
 
@@ -68,7 +74,7 @@ vim /etc/apache2/sites-available/domain.com.conf
 
 
 #Create Log Files:
-mkdir /var/www/logs/domain.com
+mkdir /var/www/domain.com/logs/
 touch error.log
 touch access.log
 
