@@ -41,7 +41,7 @@ sudo apt-get install php7.4 php7.4-curl php7.4-gd php7.4-json php7.4-mbstring ph
 
 #Install Mysql Server:
 sudo apt-get install mysql-server -y
-#mysql_secure_installation
+mysql_secure_installation
 apt-get install phpmyadmin -y (For phpmyadmin)
 
 #Mysql Login:
@@ -67,6 +67,8 @@ FLUSH PRIVILEGES;
 cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/domain.com.conf
 vim /etc/apache2/sites-available/domain.com.conf
 
+--------------------------------------Open File /etc/apache2/sites-available/domain.com.conf---------------
+
 <VirtualHost *:80>
 
   ServerAdmin webmaster@localhost
@@ -80,7 +82,7 @@ vim /etc/apache2/sites-available/domain.com.conf
 
 </VirtualHost>
 
-#File Close
+----------------------------------------------------File Close------------------------------------------------
 
 
 #Create Log Files:
@@ -91,7 +93,7 @@ touch access.log
 #Enable Virtual Host Site:
 a2ensite domain.com.conf 
 service apache2 restart
-cd /var/www/domain.com/
+cd /var/www/domain.com/public_html/
 
 vim index.html
 Add line: <h2> <center>Welcome to domain.com</center> </h2>
@@ -103,6 +105,8 @@ passwd sftpuser
 
 #Add following lines in /etc/ssh/sshd_config
 
+---------------------------------------------------Open File /etc/ssh/sshd_config----------------------------------
+
 Match User sftpuser
   ForceCommand internal-sftp
   PasswordAuthentication yes
@@ -112,13 +116,17 @@ Match User sftpuser
   AllowTcpForwarding no
   X11Forwarding no
 
+----------------------------------------------------------File Close-------------------------------------------------
+
+#Restart SSH Service
 service ssh restart
 
-
-#SSL Apache2:
+#Thsi is for SSL Apache2:
 
 #open file 
 vim /etc/apache2/sites-available/domain.com.conf
+
+------------------------------------------------Open File /etc/apache2/sites-available/domain.com.conf------------------
 
 <VirtualHost *:443>
 
@@ -145,7 +153,8 @@ DocumentRoot /var/www/domain.com/
 Redirect permanent / https://domain.com/
 </VirtualHost>  
 
-#File close
+------------------------------------------------------------File Close---------------------------------------------------
 
+#Enable SSL Mode 
 a2enmod ssl
 service apache2 restart
