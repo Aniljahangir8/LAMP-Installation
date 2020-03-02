@@ -67,7 +67,7 @@ FLUSH PRIVILEGES;
 cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/domain.com.conf
 vim /etc/apache2/sites-available/domain.com.conf
 
---------------------------------------Open File /etc/apache2/sites-available/domain.com.conf---------------
+--------------------Open File /etc/apache2/sites-available/domain.com.conf---------------
 
 <VirtualHost *:80>
 
@@ -82,7 +82,7 @@ vim /etc/apache2/sites-available/domain.com.conf
 
 </VirtualHost>
 
-----------------------------------------------------File Close------------------------------------------------
+----------------------------------------File Close--------------------------------------
 
 
 #Create Log Files:
@@ -105,7 +105,7 @@ passwd sftpuser
 
 #Add following lines in /etc/ssh/sshd_config
 
----------------------------------------------------Open File /etc/ssh/sshd_config----------------------------------
+---------------------------------Open File /etc/ssh/sshd_config------------------------------
 
 Match User sftpuser
   ForceCommand internal-sftp
@@ -116,7 +116,7 @@ Match User sftpuser
   AllowTcpForwarding no
   X11Forwarding no
 
-----------------------------------------------------------File Close-------------------------------------------------
+-------------------------------------File Close-----------------------------------
 
 #Restart SSH Service
 service ssh restart
@@ -126,7 +126,7 @@ service ssh restart
 #open file 
 vim /etc/apache2/sites-available/domain.com.conf
 
-------------------------------------------------Open File /etc/apache2/sites-available/domain.com.conf------------------
+-------------------------------Open File /etc/apache2/sites-available/domain.com.conf------------------
 
 <VirtualHost *:443>
 
@@ -153,8 +153,77 @@ DocumentRoot /var/www/domain.com/
 Redirect permanent / https://domain.com/
 </VirtualHost>  
 
-------------------------------------------------------------File Close---------------------------------------------------
+---------------------------------------------File Close---------------------------------
 
 #Enable SSL Mode 
 a2enmod ssl
 service apache2 restart
+
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+#For Nginx Setup
+
+#Update And Install Nginx
+
+sudo apt update
+sudo apt install nginx
+
+#Installing PHP and Configuring Nginx to Use the PHP Processor
+
+sudo add-apt-repository universe
+sudo apt install php-fpm php-mysql
+
+
+-----------------Open File /etc/nginx/sites-available/domain.com -------------------
+
+server {
+    server_name domain.com;
+
+    root /var/www/domain.com;
+
+    error_page 500 502 503 504 /500.html;
+ #   client_max_body_size 4G;
+    keepalive_timeout 10;
+	 location / {
+                try_files $uri $uri/ =404;
+        }
+
+
+    listen 443 ssl;
+    ssl_certificate /etc/ssl/domain.com/cert.pem;
+    ssl_certificate_key /etc/ssl/domain.com/key.pem;
+    include /etc/ssl/options-nginx-ssl.conf;
+}
+
+server {
+    if ($host = domain.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name domain.com;
+    return 404; # managed by Certbot
+}
+
+--------------------------File Close----------------------------------
+
+#Create Symbolic link to enable virtual host
+
+sudo ln -s /etc/nginx/sites-available/domain.com /etc/nginx/sites-enabled/
+
+Service nginx restart
+
+#Create file /var/www/domain.com/index.html
+
+#Add this following code to check site is working fine
+
+<h2><center>domain.com Coming Soon</center></h2>
+
+#Test your new configuration file for syntax errors by typing:
+
+sudo nginx -t
+
+#Restart Service
+
+sudo systemctl reload nginx
