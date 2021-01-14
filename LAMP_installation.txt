@@ -79,7 +79,7 @@ vim /etc/apache2/sites-available/domain.com.conf
 
   #Logs Location
   ErrorLog /var/www/domain.com/logs/error.log
-  CustomLog /var/www/logs/domain.com/logs/access.log combined
+  CustomLog /var/www/domain.com/logs/access.log combined
 
 </VirtualHost>
 
@@ -101,7 +101,7 @@ Add line: <h2> <center>Welcome to domain.com</center> </h2>
 
 
 #SftpUser:
-useradd -d /var/www/domain/ sftpuser
+useradd -d /var/www/domain.com/ sftpuser
 passwd sftpuser
 
 #Add following lines in /etc/ssh/sshd_config
@@ -142,8 +142,8 @@ vim /etc/apache2/sites-available/domain.com.conf
   SSLCertificateKeyFile /etc/ssl/domain.com/domain.key
   SSLCertificateChainFile /etc/ssl/domain.com/domain.ca-bundle
 
-  ErrorLog /var/www/logs/domain.com/error.log
-  CustomLog /var/www/logs/domain.com/access.log combined
+  ErrorLog /var/www/domain.com/logs/error.log
+  CustomLog /var/www/domain.com/logs/access.log combined
 
 </VirtualHost>
 
@@ -181,10 +181,10 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
-    root /var/www/html;
+    root /var/www/domain.com/public_html;
     index index.php index.html index.htm index.nginx-debian.html;
 
-    server_name server_domain_or_IP;
+    server_name domain.com;
 
     location / {
         try_files $uri $uri/ =404;
@@ -209,10 +209,10 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
-    root /var/www/html;
+    root /var/www/domain.com/public_html;
     index index.php index.html index.htm index.nginx-debian.html;
 
-    server_name server_domain_or_IP;
+    server_name domain.com;
 
     location / {
         try_files $uri $uri/ =404;
